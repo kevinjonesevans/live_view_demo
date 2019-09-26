@@ -7,15 +7,15 @@
 # General application configuration
 use Mix.Config
 
-# config :live_view_demo,
-  # ecto_repos: [LiveViewDemo.Repo]
+# config :frameworks_shootout,
+  # ecto_repos: [FrameworksShootout.Repo]
 
 # Configures the endpoint
-config :live_view_demo, LiveViewDemoWeb.Endpoint,
+config :frameworks_shootout, FrameworksShootoutWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "dummy_val_for_dev_env",
-  render_errors: [view: LiveViewDemoWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: LiveViewDemo.PubSub, adapter: Phoenix.PubSub.PG2],
+  render_errors: [view: FrameworksShootoutWeb.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: FrameworksShootout.PubSub, adapter: Phoenix.PubSub.PG2],
   live_view: [
     signing_salt: "another_dummy_val_for_dev_env"
   ]

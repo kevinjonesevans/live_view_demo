@@ -1,3 +1,3 @@
-defmodule LiveViewDemoWeb.LayoutViewTest do
-  use LiveViewDemoWeb.ConnCase, async: true
+defmodule FrameworksShootoutWeb.LayoutViewTest do
+  use FrameworksShootoutWeb.ConnCase, async: true
 end

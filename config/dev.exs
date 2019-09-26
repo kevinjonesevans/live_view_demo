@@ -1,10 +1,10 @@
 use Mix.Config
 
 # Configure your database
-# config :live_view_demo, LiveViewDemo.Repo,
+# config :frameworks_shootout, FrameworksShootout.Repo,
 #   username: "postgres",
 #   password: "postgres",
-#   database: "live_view_demo_dev",
+#   database: "frameworks_shootout_dev",
 #   hostname: "localhost",
 #   show_sensitive_data_on_connection_error: true,
 #   pool_size: 10
@@ -15,7 +15,7 @@ use Mix.Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :live_view_demo, LiveViewDemoWeb.Endpoint,
+config :frameworks_shootout, FrameworksShootoutWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -55,13 +55,13 @@ config :live_view_demo, LiveViewDemoWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :live_view_demo, LiveViewDemoWeb.Endpoint,
+config :frameworks_shootout, FrameworksShootoutWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/live_view_demo_web/(live|views)/.*(ex)$",
-      ~r"lib/live_view_demo_web/templates/.*(eex)$",
+      ~r"lib/frameworks_shootout_web/(live|views)/.*(ex)$",
+      ~r"lib/frameworks_shootout_web/templates/.*(eex)$",
       ~r{lib/live_view/live/.*(ex)$}
     ]
   ]

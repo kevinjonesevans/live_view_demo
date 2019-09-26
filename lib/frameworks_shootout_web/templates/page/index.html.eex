@@ -1,0 +1,17 @@
+<div id="game">
+  <div class="max-w-md mx-auto text-center text-grey-lighter antialiased flex flex-col">
+    <div class="flex items-center justify-center mt-12 md:mt-24 mb-3">
+      <%= svg :phoenix, class: "h-12 w-12 mr-2" %>
+      <h1 class="text-3xl">Frameworks Shootout</h1>
+    </div>
+    <p>A demonstration of <a href="https://github.com/phoenixframework/phoenix_live_view" class="text-grey-lighter">Phoenix LiveView</a></p>
+    <div class="mt-24">
+      <%= link "Play!", to: "/game", class: "p-3 shadow rounded bg-green text-white no-underline hover:bg-white hover:text-green"%>
+    </div>
+  </div>
+
+  <div class="absolute pin-b pin-r pin-l h-12 p-4 mb-16 text-center text-blue-dark flex flex-col">
+    <div class="mb-1">Made by <a href="https://kevinjonesevans.dev" class="text-blue-dark mb-2">Kevin Jones-Evans</a></div>
+    <div>Code available on <a href="https://github.com/kevinjonesevans/live_view_demo" class="text-blue-dark">GitHub</a></div>
+  </div>
+</div>

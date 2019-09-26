@@ -1,4 +1,38 @@
-/* This file is for your main application css. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import "./phoenix.css";
-@import "../../deps/phoenix_live_view/assets/css/live_view.css";
+#game {
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-image: url('/images/skyline.png');
+  background-position: left;
+  background-repeat: repeat;
+  background-size: auto 100%;
+  background-attachment: fixed;
+}
+
+#ground {
+  position: absolute;
+  bottom: 0;
+  height: 17vh;
+  width: 100vw;
+  background-image:url('/images/ground.png');
+  background-position: left;
+  background-repeat: repeat;
+  background-size: auto 100%;
+}
+
+#bird {
+  position: absolute;
+  width: 3vh;
+  height: 4.25vh;
+  z-index: 40;
+}
+
+.pipe {
+  position: absolute;
+  width: 7vh;
+}
