@@ -1,21 +1,14 @@
-<div id="game" phx-keydown="keydown" phx-keyup="keyup" phx-keyleft="keyleft" phx-keyright="keyright" phx-target="window">
+<div id="game" phx-keydown="keydown" phx-target="window">
   <header class="flex items-center justify-between text-white px-4 py-2 antialiased relative z-50">
     <div class="flex items-center opacity-75">
-      <!--<%= svg :phoenix, class: "h-1 w-1 mr-2 fill-current" %>-->
+      <%= svg :phoenix, class: "h-1 w-1 mr-2 fill-current" %>
       <h1 class="text-xl font-normal">Frameworks Shootout</h1>
     </div>
     <div style="font-variant-numeric: tabular-nums;">
       <span class="font-bold pr-2">Score:</span> <%= format_score(@game.score) %>
     </div>
   </header>
-
-  <!--<div id="phoenix" style="right:<%= @game.phoenix.x %>vw; top:<%= @game.phoenix.y %>vh; transform: rotate(<%= if @game.phoenix.velocity > 0, do: -25, else: 25 %>deg);">
-    <img src="<%= Routes.static_path(FrameworksShootoutWeb.Endpoint, "/images/phoenix_#{@game.phoenix.direction}.png") %>"/>
-  </div>-->
-
-  <div id="phoenix">
-    <img src="<%= Routes.static_path(FrameworksShootoutWeb.Endpoint, "/images/phoenix_#{@game.phoenix.direction}.png") %>" style="left:<%= @game.phoenix.x %>vw; top:<%= @game.phoenix.y %>vh; transform: rotate(<%= @game.phoenix.heading %>deg);"/>
-  </div>
+  <img id="phoenix" src="<%= Routes.static_path(FrameworksShootoutWeb.Endpoint, if(@game.phoenix.thrust, do: "/images/ship_thrusting.png", else: "/images/ship.png")) %>" style="left:<%= @game.phoenix.x %>vw; top:<%= @game.phoenix.y %>vh; transform: rotate(<%= @game.phoenix.heading %>deg);"/>
 
   <%= for enemy <- @game.enemies do %>
     <div class="enemy" style="left:<%= enemy.x %>vw; top:<%= enemy.y %>vh;">

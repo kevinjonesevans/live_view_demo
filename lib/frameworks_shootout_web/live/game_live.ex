@@ -35,7 +35,7 @@ defmodule FrameworksShootoutWeb.GameLive do
   end
 
   def handle_event("keydown", "ArrowUp", socket) do
-    game = Game.move_phoenix_up(socket.assigns.game)
+    game = Game.thrust(socket.assigns.game)
     {:noreply, assign(socket, game: game)}
   end
 
@@ -54,7 +54,18 @@ defmodule FrameworksShootoutWeb.GameLive do
     {:noreply, assign(socket, game: game)}
   end
 
-  # def handle_event("keyup", _key, socket) do
-  #   {:noreply, socket}
-  # end
+  def handle_event("keydown", " ", socket) do
+    game = Game.phoenix_fire(socket.assigns.game)
+    {:noreply, assign(socket, game: socket.assigns.game)}
+  end
+
+  def handle_event("keydown", _key, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("keyup", _key, socket) do
+    game = socket.assigns.game
+    game = %{game | phoenix: %{game.phoenix | thrust: false}}
+    {:noreply, assign(socket, game: game)}
+  end
 end
