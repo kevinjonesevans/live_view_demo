@@ -3,8 +3,7 @@
   "license": "MIT",
   "scripts": {
     "deploy": "webpack --mode production",
-    "watch": "webpack --mode development --watch",
-    "build": "postcss css/tailwind.css -o public/build/tailwind.css"
+    "watch": "webpack --mode development --watch"
   },
   "dependencies": {
     "phoenix": "file:../deps/phoenix",

@@ -10,10 +10,16 @@ defmodule FrameworksShootoutWeb.GameLive do
     socket = assign(socket, game: Game.new())
 
     if connected?(socket) do
+      # socket = schedule_asteroid(socket)
       {:ok, schedule_tick(socket)}
     else
       {:ok, socket}
     end
+  end
+
+  defp schedule_asteroid(socket) do
+    Process.send_after(socket.assigns.game, :add_asteroid, 3000)
+    socket
   end
 
   defp schedule_tick(socket) do
@@ -27,6 +33,19 @@ defmodule FrameworksShootoutWeb.GameLive do
     case game.state do
       :ok ->
         socket = schedule_tick(socket)
+        {:noreply, assign(socket, game: game)}
+
+      :end ->
+        {:noreply, assign(socket, game: game)}
+    end
+  end
+
+  def handle_info(:add_asteroid, socket) do
+    game = Game.add_asteroid(socket.assigns.game)
+
+    case game.state do
+      :ok ->
+        socket = schedule_asteroid(socket)
         {:noreply, assign(socket, game: game)}
 
       :end ->

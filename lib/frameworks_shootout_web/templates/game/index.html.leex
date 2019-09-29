@@ -10,15 +10,11 @@
   </header>
   <img id="phoenix" src="<%= Routes.static_path(FrameworksShootoutWeb.Endpoint, if(@game.phoenix.thrust, do: "/images/ship_thrusting.png", else: "/images/ship.png")) %>" style="left:<%= @game.phoenix.x %>vw; top:<%= @game.phoenix.y %>vh; transform: rotate(<%= @game.phoenix.heading %>deg);"/>
 
-  <%= for enemy <- @game.enemies do %>
-    <div class="enemy" style="left:<%= enemy.x %>vw; top:<%= enemy.y %>vh;">
-      <img src="<%= Routes.static_path(FrameworksShootoutWeb.Endpoint, "/images/enemy_#{enemy.dir}.png") %>"/>
+  <%= for asteroid <- @game.asteroids do %>
+    <div class="asteroid" style="left:<%= asteroid.x %>vw; top:<%= asteroid.y %>vh;">
+      <img src="<%= Routes.static_path(FrameworksShootoutWeb.Endpoint, "/images/asteroid_#{asteroid.size}.png") %>" style="transform: rotate(<%= asteroid.heading %>deg);"/>
     </div>
   <% end %>
-
-  <div id="ground">
-    &nbsp;
-  </div>
 
   <div class="shadow-lg fixed pin z-50 overflow-auto <%= if @game.state == :ok, do: "hidden" %>" style="background-color: rgba(96,111,123,0.4)">
     <div role="dialog" class="relative rounded-sm py-6 bg-white md:max-w-sm mt-32 mb-auto mx-8 md:mx-auto flex-col">

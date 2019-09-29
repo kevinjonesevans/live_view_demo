@@ -21,7 +21,6 @@
   z-index: 40;
 }
 
-.pipe {
+.asteroid {
   position: absolute;
-  width: 7vh;
 }

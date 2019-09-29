@@ -1,14 +1,14 @@
 defmodule FrameworksShootout.Game do
   alias __MODULE__
-  defstruct [:phoenix, :enemies, :projectiles, :score, :state, :updated]
-  @inertia 0.05
+  defstruct [:phoenix, :asteroids, :projectiles, :score, :state, :updated]
+  @inertia 0.03
   @tick 100_000_000
 
   def new() do
     %Game{
       state: :ok,
-      phoenix: %{x: 50, y: 50, thrust: false, velocity: 0, heading: 0},
-      enemies: [],
+      phoenix: %{x: 50, y: 50, thrust: false, velocity: 0, heading: 0, movement_heading: 0, movement_velocity: 0},
+      asteroids: [],
       projectiles: [],
       score: 0.0,
       updated: System.monotonic_time() - @tick
@@ -21,9 +21,9 @@ defmodule FrameworksShootout.Game do
 
     game
     |> move_phoenix
-    |> move_enemies
+    # |> move_asteroids
     # |> check_for_collisions
-    # |> add_enemies
+    # |> add_asteroid
     # |> Map.put(:score, game.score + 0.1 * dt)
     |> Map.put(:updated, time)
   end
@@ -31,24 +31,29 @@ defmodule FrameworksShootout.Game do
   def update(game), do: game
 
   def thrust(game) do
-    # %{game | phoenix: %{game.phoenix | y: game.phoenix.y - 2}}
-    game = %{game | phoenix: %{game.phoenix | velocity: game.phoenix.velocity + 0.8}}
-    game = %{game | phoenix: %{game.phoenix | thrust: false}}
+    diff_heading = Kernel.abs(Integer.mod(game.phoenix.movement_heading, 180) - Integer.mod(game.phoenix.heading, 180))
+    # calculate if the heading is within 90 degrees of the old heading
+    # velocity factor is proportional to the heading
+    velocity_ratio = 100 - diff_heading / 180
+      # if it is, then add the weighted thrust to the velocity
+      # if not, subtract the weighted thrust from the velocity
+    game = %{game | phoenix: %{game.phoenix | velocity: game.phoenix.velocity + (0.8 * velocity_ratio)}}
+    game = %{game | phoenix: %{game.phoenix | thrust: true}}
+    # game = %{game | phoenix: %{game.phoenix | movement_velocity: :math.sqrt(:math.pow(game.phoenix.movement_velocity,2) + }}
+    game = %{game | phoenix: %{game.phoenix | movement_heading: Integer.mod(Kernel.trunc((game.phoenix.heading + game.phoenix.movement_heading) / 2), 360)}}
+    # game = %{game | phoenix: %{game.phoenix | movement_heading: game.phoenix.heading}}
     game
   end
 
   def move_phoenix_down(game) do
-    # %{game | phoenix: %{game.phoenix | y: game.phoenix.y + 2}}
     game
   end
 
   def move_phoenix_left(game) do
-    # %{game | phoenix: %{game.phoenix | x: game.phoenix.x - 2}}
     %{game | phoenix: %{game.phoenix | heading: Integer.mod(game.phoenix.heading - 10, 360)}}
   end
 
   def move_phoenix_right(game) do
-    # %{game | phoenix: %{game.phoenix | x: game.phoenix.x + 2}}
     %{game | phoenix: %{game.phoenix | heading: Integer.mod(game.phoenix.heading + 10, 360)}}
   end
 
@@ -63,77 +68,58 @@ defmodule FrameworksShootout.Game do
     %{game | projectiles: game.projectiles ++ new_projectile}
   end
 
+  defp move_object(object) do
+    # IO.inspect(game)
+    object =
+      object
+      # |> Map.put(:velocity, max(object.velocity - @inertia, 0))
+      |> Map.put(:x, Integer.mod(Kernel.trunc(object.x + (:math.cos(object.movement_heading * :math.pi/180) * object.velocity)), 100))
+      |> Map.put(:y, Integer.mod(Kernel.trunc(object.y + (:math.sin(object.movement_heading * :math.pi/180) * object.velocity)), 100))
+
+    object
+  end
+
   defp move_phoenix(game) do
-    IO.inspect(game)
-    # IO.puts(":math.cos(game.phoenix.heading):#{:math.cos(game.phoenix.heading)}")
-    # IO.puts(":math.sin(game.phoenix.heading):#{:math.sin(game.phoenix.heading)}")
-    # IO.puts("Combined cos:#{(:math.cos(game.phoenix.heading) * game.phoenix.velocity)}")
-    # IO.puts("Combined sin:#{(:math.sin(game.phoenix.heading) * game.phoenix.velocity)}")
-    # case game.phoenix.heading do
-    #   0 < game.phoenix.heading and game.phoenix.heading <= 90 ->
-    #     changeX = game.phoenix.x + (:math.cos(game.phoenix.heading) * game.phoenix.velocity)
-    #     changeY = game.phoenix.y + (:math.sin(game.phoenix.heading) * game.phoenix.velocity)
-    #   90 < game.phoenix.heading and game.phoenix.heading <= 180 ->
-    #     changeX = game.phoenix.x + (:math.cos(game.phoenix.heading) * game.phoenix.velocity)
-    #     changeY =
-    #   {,
-    #     game.phoenix.y + (:math.sin(180 - game.phoenix.heading) * game.phoenix.velocity)}
-    #     when
-    #   {game.phoenix.x + (:math.cos(game.phoenix.heading) * game.phoenix.velocity),
-    #     game.phoenix.y + (:math.sin(game.phoenix.heading) * game.phoenix.velocity)}
-    #     when 180 < game.phoenix.heading and game.phoenix.heading <= 270
-    #   {game.phoenix.x + (:math.cos(game.phoenix.heading) * game.phoenix.velocity),
-    #     game.phoenix.y + (:math.sin(game.phoenix.heading) * game.phoenix.velocity)}
-    #     when 270 < game.phoenix.heading and game.phoenix.heading <= 360
-    # end
-    phoenix =
-      game.phoenix
-      # |> Map.put(:wings, "left")
-      |> Map.put(:velocity, max(game.phoenix.velocity - @inertia, 0))
-      |> Map.put(:x, Integer.mod(Kernel.trunc(game.phoenix.x + (:math.cos(game.phoenix.heading * :math.pi/180) * game.phoenix.velocity)), 100))
-      |> Map.put(:y, Integer.mod(Kernel.trunc(game.phoenix.y + (:math.sin(game.phoenix.heading * :math.pi/180) * game.phoenix.velocity)), 100))
-
-    %{game | phoenix: phoenix}
+    game = %{game | phoenix: move_object(game.phoenix)}
+    %{game | phoenix: %{game.phoenix | thrust: false}}
   end
 
-  defp move_enemies(game) do
-    enemies =
-      game.enemies
-      |> Enum.map(fn p -> move_enemy(p) end)
-      |> Enum.filter(fn p -> p.x > -10 end)
+  defp move_asteroids(game) do
+    asteroids =
+      game.asteroids
+      |> Enum.map(fn a -> move_object(a) end)
 
-    %{game | enemies: enemies}
+    %{game | asteroids: asteroids}
   end
 
-  defp add_enemies(game) do
-    case Enum.find(game.enemies, fn p -> p.x > 50 end) do
-      nil ->
-        enemies = [
-          %{x: 100, y: Enum.random(-30..0), height: 45, dir: :down},
-          %{x: 100, y: Enum.random(40..80), height: 45, dir: :up}
-        ]
-
-        %{game | enemies: game.enemies ++ enemies}
-
-      _ ->
-        game
+  defp add_asteroid(game) do
+    if Enum.count(game.asteroids) < 3 do
+      new_asteroid = [
+        %{
+          x: Enum.random(Enum.to_list(0..Integer.mod(game.phoenix.x-12, 100)) ++ Enum.to_list(Integer.mod(game.phoenix.x+12, 100)..100)),
+          y: Enum.random(Enum.to_list(0..Integer.mod(game.phoenix.y-12, 100)) ++ Enum.to_list(Integer.mod(game.phoenix.y+12, 100)..100)),
+          size: Enum.random(['small']),
+          velocity: Enum.random([2.1]),
+          movement_heading: Enum.random(0..360),
+          creation_time: System.monotonic_time()
+        }
+      ]
+      %{game | asteroids: game.asteroids ++ new_asteroid}
+    else
+      game
     end
-  end
-
-  defp move_enemy(enemy) do
-    %{enemy | x: enemy.x - 2}
   end
 
   defp check_for_collisions(game) do
     game
-    |> check_enemy_collisions
+    |> check_asteroid_collisions
   end
 
-  defp check_enemy_collisions(%{state: :ok} = game) do
+  defp check_asteroid_collisions(%{state: :ok} = game) do
     state =
-      case Enum.find(game.enemies, fn p ->
-             game.phoenix.x > p.x - 2.5 && game.phoenix.x < p.x + 2.5 &&
-               (game.phoenix.y > p.y and game.phoenix.y < p.y + p.height)
+      case Enum.find(game.asteroids, fn asteroid ->
+             game.phoenix.x > asteroid.x - 25 && game.phoenix.x < asteroid.x + 25 &&
+               (game.phoenix.y > asteroid.y and game.phoenix.y < asteroid.y + asteroid.height)
            end) do
         nil -> :ok
         _ -> :end
@@ -142,5 +128,5 @@ defmodule FrameworksShootout.Game do
     %{game | state: state}
   end
 
-  defp check_enemy_collisions(game), do: game
+  defp check_asteroid_collisions(game), do: game
 end
